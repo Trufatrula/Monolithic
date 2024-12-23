@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TeclasManager : MonoBehaviour
 {
     public static TeclasManager Instance { get; private set; }
 
-    private List<TeclaFlecha> flechas;
+    private List<DirectionData> flechas;
 
     private void Awake()
     {
@@ -13,7 +14,7 @@ public class TeclasManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            flechas = new List<TeclaFlecha>();
+            flechas = new List<DirectionData>();
         }
         else
         {
@@ -21,30 +22,69 @@ public class TeclasManager : MonoBehaviour
         }
     }
 
+    public void CargarTeclas(List<DirectionData> savedFlechas)
+    {
+        flechas = savedFlechas;
+        List<string> directionsRep = new List<string>();
+
+        if(!(flechas.Count == 0))
+        {
+            for (int i = flechas.Count - 1; i >= 0; i--)
+            {
+                if (!directionsRep.Contains(flechas[i].direction))
+                {
+                    directionsRep.Add(flechas[i].direction);
+                    GenerateFlecha(flechas[i]);
+                    GameManager.Instance.GiveMovementArrow(flechas[i].direction);
+                }
+            }
+        }
+    }
+
     public void ConseguirFlecha(TeclaFlecha flecha)
     {
-        flechas.Add(flecha);
+        flechas.Add(new DirectionData { direction = flecha.GetDirection(), angle = flecha.GetOriginalRotation().z });
+        Debug.Log(flechas[flechas.Count-1].angle + " " + flechas[flechas.Count - 1].direction);
 
-        Transform arrowPlace = null;
+        Transform arrowPlace = GetSocketTecla(flecha.GetDirection());
 
-        switch(flecha.GetDirection()) 
+        PlaceFlechaInSocket(flecha, arrowPlace);
+        flecha.SetTargetTransform(arrowPlace);
+    }
+
+    private void GenerateFlecha(DirectionData flechaData)
+    {
+        TeclaFlecha flechaPrefab = Resources.Load<TeclaFlecha>("Flecha");
+        Transform socketTecla = GetSocketTecla(flechaData.direction);
+
+        TeclaFlecha flechorra = Instantiate(flechaPrefab, socketTecla.position, new Quaternion(0, 0, flechaData.angle, 1));
+        PlaceFlechaInSocket(flechorra, socketTecla);
+    }
+
+    private Transform GetSocketTecla(string direction)
+    {
+        switch (direction)
         {
             case "Up":
-                arrowPlace = GameObject.Find("Arriba").transform;
-                break;
+                return GameObject.Find("Arriba").transform;
             case "Down":
-                arrowPlace = GameObject.Find("Abajo").transform;
-                break;
+                return GameObject.Find("Abajo").transform;
             case "Left":
-                arrowPlace = GameObject.Find("Izquierda").transform;
-                break;
+                return GameObject.Find("Izquierda").transform;
             case "Right":
-                arrowPlace = GameObject.Find("Derecha").transform;
-                break;
+                return GameObject.Find("Derecha").transform;
             default:
-                break;
+                return null;
         }
+    }
 
-        flecha.SetTargetTransform(arrowPlace);
+    private void PlaceFlechaInSocket(TeclaFlecha flecha, Transform socket)
+    {
+        Debug.Log("HOLA");
+        if(socket.childCount > 0)
+        {
+            Destroy(socket.GetChild(0).gameObject);
+        }
+        flecha.transform.parent = socket;
     }
 }

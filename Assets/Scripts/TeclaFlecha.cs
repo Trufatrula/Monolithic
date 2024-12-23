@@ -68,12 +68,16 @@ public class TeclaFlecha : MonoBehaviour
         }
         transform.position = targetPosition;
         transform.rotation = originalRotation;
-        Debug.Log(originalRotation);
     }
 
     public void SetTargetTransform(Transform targetTransform)
     {
         this.targetTransform = targetTransform;
+    }
+
+    public Quaternion GetOriginalRotation()
+    {
+        return originalRotation;
     }
 
     public string GetDirection()
