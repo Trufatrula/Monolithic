@@ -11,6 +11,8 @@ public class TeclasManager : MonoBehaviour
 
     private List<DirectionData> flechas;
 
+    private Dictionary<string, int> teclasDisponibles; 
+
     private bool moverse = false;
     [SerializeField] Transform flechasInterfaz;
     private Vector3 flechasInterfazPosOriginal;
@@ -24,6 +26,7 @@ public class TeclasManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             flechas = new List<DirectionData>();
+            teclasDisponibles = new Dictionary<string, int>();
         }
         else
         {
@@ -65,6 +68,9 @@ public class TeclasManager : MonoBehaviour
                     GenerateFlecha(flechas[i]);
                     GameManager.Instance.GiveMovementArrow(flechas[i].direction);
                 }
+
+                AddTecla(flechas[i].direction);
+                Debug.Log(GetAllTeclas());
             }
         }
     }
@@ -73,6 +79,7 @@ public class TeclasManager : MonoBehaviour
     {
         ToggleTargetPosition(false);
         flechas.Add(new DirectionData { direction = flecha.GetDirection(), angle = flecha.GetOriginalRotation().z });
+        AddTecla(flecha.GetDirection());
         Debug.Log(flechas[flechas.Count-1].angle + " " + flechas[flechas.Count - 1].direction);
 
         Transform arrowPlace = GetSocketTecla(flecha.GetDirection());
@@ -130,6 +137,47 @@ public class TeclasManager : MonoBehaviour
             flechasInterfazPosOffset = flechasInterfazPosOriginal + new Vector3(0, -5f, 0);
         }
         moverse = true;
+    }
+
+    public void AddTecla(string tipoTecla, int cantidad = 1)
+    {
+        if (teclasDisponibles.ContainsKey(tipoTecla))
+        {
+            teclasDisponibles[tipoTecla] += cantidad;
+        }
+        else
+        {
+            teclasDisponibles[tipoTecla] = cantidad;
+        }
+    }
+
+    public bool QuitarTecla(string tipoTecla, int cantidad = 1)
+    {
+        if (teclasDisponibles.ContainsKey(tipoTecla) && teclasDisponibles[tipoTecla] >= cantidad)
+        {
+            teclasDisponibles[tipoTecla] -= cantidad;
+
+            if (teclasDisponibles[tipoTecla] == 0)
+            {
+                teclasDisponibles.Remove(tipoTecla);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public int GetCantidadTecla(string tipoTecla)
+    {
+        if (teclasDisponibles.ContainsKey(tipoTecla))
+        {
+            return teclasDisponibles[tipoTecla];
+        }
+        return 0;
+    }
+
+    public Dictionary<string, int> GetAllTeclas()
+    {
+        return new Dictionary<string, int>(teclasDisponibles);
     }
 
 }

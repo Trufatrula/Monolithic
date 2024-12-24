@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using System;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -8,7 +10,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     private string entrance;
- 
+    private GameObject playerInstance;
+    private TeclasManager teclasManager;
+
     private void Awake()
     {
         if (Instance == null)
@@ -30,14 +34,38 @@ public class GameManager : MonoBehaviour
             new DirectionData { direction = "Left", angle = 0.7777f },
             new DirectionData { direction = "Right", angle = 0.2222f }
         };
-        TeclasManager.Instance.CargarTeclas(listaFlechas);
+        teclasManager = TeclasManager.Instance;
+        teclasManager.CargarTeclas(listaFlechas);
     }
 
     public void InstantiatePlayer(Transform spawn)
     {
         GameObject playerPrefab = Resources.Load<GameObject>("Player");
 
-        Instantiate(playerPrefab, spawn.position, Quaternion.identity);
+        playerInstance = Instantiate(playerPrefab, spawn.position, Quaternion.identity);
+    }
+
+    private void AddComponentToPlayer(string componentName)
+    {
+        componentName = componentName + "Component";
+        Type componentType = Type.GetType(componentName + ", UnityEngine");
+
+        if (componentType != null && playerInstance != null)
+        {
+            playerInstance.AddComponent(componentType);
+        }
+        else
+        {
+            Debug.LogError(componentName);
+        }
+    }
+
+    public void UpdateAllComponents()
+    {
+        foreach(KeyValuePair<string, int> teclas in teclasManager.GetAllTeclas())
+        {
+            AddComponentToPlayer(teclas.Key);
+        }
     }
 
     public void LoadNormalScene(string scene, string entrance)
@@ -45,11 +73,6 @@ public class GameManager : MonoBehaviour
         this.entrance = entrance;
         Debug.Log(entrance);
         SceneManager.LoadScene(scene);
-    }
-
-    public void GiveMovementArrow(string direction)
-    {
-        Debug.Log(direction);
     }
 
     public string GetEntrance()
