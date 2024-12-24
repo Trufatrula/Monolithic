@@ -24,10 +24,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        List<DirectionData> listaFlechas = new List<DirectionData>();
-        listaFlechas.Add(new DirectionData { direction = "Right", angle = 0.9998f });
-        listaFlechas.Add(new DirectionData { direction = "Left", angle = 0.7777f });
-        listaFlechas.Add(new DirectionData { direction = "Right", angle = 0.2222f });
+        List<DirectionData> listaFlechas = new List<DirectionData>
+        {
+            new DirectionData { direction = "Right", angle = 0.9998f },
+            new DirectionData { direction = "Left", angle = 0.7777f },
+            new DirectionData { direction = "Right", angle = 0.2222f }
+        };
         TeclasManager.Instance.CargarTeclas(listaFlechas);
     }
 
@@ -49,8 +51,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log(direction);
     }
-
-
 
     public string GetEntrance()
     {

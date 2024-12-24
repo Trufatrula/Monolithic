@@ -9,7 +9,7 @@ public class TeclaFlecha : MonoBehaviour
     
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
-    private Transform targetTransform;
+    //private Transform targetTransform;
     private Quaternion originalRotation;
 
     void Start()
@@ -36,7 +36,7 @@ public class TeclaFlecha : MonoBehaviour
                 StartCoroutine(MoveSequence());
             } else
             {
-                StartCoroutine(MoveAndRotateToPosition(targetTransform.position));
+                StartCoroutine(PlaceInSocket());
             }
         }
     }
@@ -48,10 +48,7 @@ public class TeclaFlecha : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        if (targetTransform != null)
-        {
-            yield return StartCoroutine(MoveAndRotateToPosition(targetTransform.position));
-        }
+        yield return StartCoroutine(PlaceInSocket());
     }
 
     IEnumerator MoveAndRotateToPosition(Vector3 targetPosition)
@@ -70,10 +67,27 @@ public class TeclaFlecha : MonoBehaviour
         transform.rotation = originalRotation;
     }
 
-    public void SetTargetTransform(Transform targetTransform)
+    IEnumerator PlaceInSocket()
     {
-        this.targetTransform = targetTransform;
+        Vector3 targetPosition = new Vector3(0, 0, 0);
+        targetPosition.z = transform.position.z;
+
+        while (Vector3.Distance(transform.localPosition, targetPosition) > 0.1f)
+        {
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPosition, moveSpeed * Time.deltaTime);
+
+            transform.Rotate(Vector3.forward, rotateSpeed * Time.deltaTime);
+
+            yield return null;
+        }
+        transform.localPosition = targetPosition;
+        transform.rotation = originalRotation;
     }
+
+    //public void SetTargetTransform(Transform targetTransform)
+    //{
+    //    this.targetTransform = targetTransform;
+    //}
 
     public Quaternion GetOriginalRotation()
     {
