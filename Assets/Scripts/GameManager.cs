@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [SerializeField] private Transform playerPosInicial;
+
     private string entrance;
     private GameObject playerInstance;
     private TeclasManager teclasManager;
@@ -28,55 +30,53 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        List<DirectionData> listaFlechas = new List<DirectionData>
-        {
-            new DirectionData { direction = "Right", angle = 0.9998f },
-            new DirectionData { direction = "Left", angle = 0.7777f },
-            new DirectionData { direction = "Right", angle = 0.2222f }
-        };
         teclasManager = TeclasManager.Instance;
-        teclasManager.CargarTeclas(listaFlechas);
+        InstantiatePlayer(playerPosInicial);
+        //List<DirectionData> listaFlechas = new List<DirectionData>
+        //{
+        //    new DirectionData { direction = "Right", angle = 0.9998f },
+        //    new DirectionData { direction = "Left", angle = 0.7777f },
+        //    new DirectionData { direction = "Right", angle = 0.2222f }
+        //};
+        //teclasManager.CargarTeclas(listaFlechas);
     }
 
     public void InstantiatePlayer(Transform spawn)
     {
         GameObject playerPrefab = Resources.Load<GameObject>("Player");
-
         playerInstance = Instantiate(playerPrefab, spawn.position, Quaternion.identity);
+
+        teclasManager.ReloadTeclas();
     }
 
-    private void AddComponentToPlayer(string componentName)
+    public void AddComponentToPlayer(Type component)
     {
-        componentName = componentName + "Component";
-        Type componentType = Type.GetType(componentName + ", UnityEngine");
-
-        if (componentType != null && playerInstance != null)
+        if(playerInstance != null)
         {
-            playerInstance.AddComponent(componentType);
+            playerInstance.AddComponent(component);
         }
         else
         {
-            Debug.LogError(componentName);
+            Debug.LogError("Player inexistente");
         }
     }
 
-    public void UpdateAllComponents()
+    public void RemoveComponentFromPlayer(Type component)
     {
-        foreach(KeyValuePair<string, int> teclas in teclasManager.GetAllTeclas())
+        if (playerInstance != null)
         {
-            AddComponentToPlayer(teclas.Key);
+            Destroy(playerInstance.GetComponent(component));
+        }
+        else
+        {
+            Debug.LogError("Player inexistente");
         }
     }
-
-    public void LoadNormalScene(string scene, string entrance)
+    
+    public Transform GetPlayerCamera()
     {
-        this.entrance = entrance;
-        Debug.Log(entrance);
-        SceneManager.LoadScene(scene);
-    }
-
-    public string GetEntrance()
-    {
-        return entrance;
+        Transform playerCamPos = playerInstance.transform.Find("PuntoCamara");
+        Debug.Log(playerCamPos.gameObject.name);
+        return playerCamPos;
     }
 }

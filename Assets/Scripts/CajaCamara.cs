@@ -9,6 +9,18 @@ public class CajaCamara : MonoBehaviour
     [SerializeField] Transform puntoDrc;
     [SerializeField] CinemachineVirtualCamera camara;
 
+    private void Start()
+    {
+        if(puntoIzq == null)
+        {
+            puntoIzq = GameManager.Instance.GetPlayerCamera();
+        }
+        else if(puntoDrc == null)
+        {
+            puntoDrc = GameManager.Instance.GetPlayerCamera();
+        }
+    }
+
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))

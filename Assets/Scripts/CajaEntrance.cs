@@ -8,12 +8,15 @@ public class CajaEntrance : MonoBehaviour
     [SerializeField] private string escenaEntrance;
     [SerializeField] private Transform entrance;
     [SerializeField] private Transform playerSpawn;
+    [SerializeField] private int transitionAnimation = 0;
+
+    private SceneController sceneController;
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            GameManager.Instance.LoadNormalScene(escena, escenaEntrance);
+            sceneController.ExitScene(escena, escenaEntrance, transitionAnimation);
         }
     }
 
@@ -27,4 +30,13 @@ public class CajaEntrance : MonoBehaviour
         return playerSpawn;
     }
 
+    public int GetTransitionAnimation()
+    {
+        return transitionAnimation;
+    }
+
+    public void SetSceneController(SceneController sceneController)
+    {
+        this.sceneController = sceneController; 
+    }
 }

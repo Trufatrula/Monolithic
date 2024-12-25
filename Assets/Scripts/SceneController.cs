@@ -1,32 +1,38 @@
 using Cinemachine;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneController : MonoBehaviour
 {
     [SerializeField] private CajaEntrance[] entrances;
     [SerializeField] private CinemachineVirtualCamera camara;
+    [SerializeField] private Image[] pantallasTransicion;
 
-    private GameManager gameManager;
+    private GlobalSceneController gSceneController;
 
     private void Start()
     {
-        gameManager = GameManager.Instance;
-
-        if(gameManager == null)
-        {
-            Debug.Log("ASDASAS");
-        }
+        gSceneController = GlobalSceneController.Instance;
+        //gSceneController.SetSceneController(this);
 
         foreach (CajaEntrance entrance in entrances)
         {
-            if (entrance.name == gameManager.GetEntrance())
+            entrance.SetSceneController(this);
+            if (entrance.name == gSceneController.GetEntrance())
             {
                 camara.Follow = entrance.GetEntrance();
-                gameManager.InstantiatePlayer(entrance.GetPlayerSpawn());
+                gSceneController.EnterScene(entrance.GetPlayerSpawn());
+                pantallasTransicion[entrance.GetTransitionAnimation()].GetComponent<Animator>().SetTrigger("DerechaSalir");
                 break;
             }
+            Debug.Log("SALUFOS");
+            pantallasTransicion[0].GetComponent<Animator>().SetTrigger("DerechaSalir");
         }
     }
 
+    public void ExitScene(string scene, string newEntrance, int transicionAnimation)
+    {
+        gSceneController.ExitScene(scene, newEntrance);
+        pantallasTransicion[transicionAnimation].GetComponent<Animator>().SetTrigger("DerechaEntrar");
+    }
 }

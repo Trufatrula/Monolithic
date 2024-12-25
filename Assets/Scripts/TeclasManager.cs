@@ -1,17 +1,21 @@
 using System.Collections.Generic;
-using System.Linq;
-using TMPro;
 using UnityEngine;
+using System;
 
 public class TeclasManager : MonoBehaviour
 {
     public static TeclasManager Instance { get; private set; }
 
     [SerializeField] private List<Transform> socketsFlechas;
+    private GameManager gameManager;
 
     private List<DirectionData> flechas;
-
-    private Dictionary<string, int> teclasDisponibles; 
+    private Dictionary<string, int> teclasDisponibles;
+    private Dictionary<string, Type> teclasComponentes = new Dictionary<string, Type>
+    {
+        { "Left", typeof(MovementLeftArrow) },
+        { "Right", typeof(MovementRightArrow) }
+    };
 
     private bool moverse = false;
     [SerializeField] Transform flechasInterfaz;
@@ -27,6 +31,7 @@ public class TeclasManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             flechas = new List<DirectionData>();
             teclasDisponibles = new Dictionary<string, int>();
+            gameManager = GameManager.Instance;
         }
         else
         {
@@ -36,7 +41,7 @@ public class TeclasManager : MonoBehaviour
 
     private void Start()
     {
-        flechasInterfazPosOriginal = flechasInterfaz.position;
+        flechasInterfazPosOriginal = flechasInterfaz.localPosition;
         flechasInterfazPosOffset = flechasInterfazPosOriginal;
     }
 
@@ -44,13 +49,13 @@ public class TeclasManager : MonoBehaviour
     {
         if (!moverse) return;
 
-        if(flechasInterfaz.position == flechasInterfazPosOffset)
+        if(flechasInterfaz.localPosition == flechasInterfazPosOffset)
         {
             moverse = false;
             return;
         }
 
-        flechasInterfaz.position = Vector3.Lerp(flechasInterfaz.position, flechasInterfazPosOffset, 5f * Time.deltaTime);
+        flechasInterfaz.localPosition = Vector3.Lerp(flechasInterfaz.localPosition, flechasInterfazPosOffset, 5f * Time.deltaTime);
     }
 
     public void CargarTeclas(List<DirectionData> savedFlechas)
@@ -66,11 +71,8 @@ public class TeclasManager : MonoBehaviour
                 {
                     directionsRep.Add(flechas[i].direction);
                     GenerateFlecha(flechas[i]);
-                    GameManager.Instance.GiveMovementArrow(flechas[i].direction);
                 }
-
                 AddTecla(flechas[i].direction);
-                Debug.Log(GetAllTeclas());
             }
         }
     }
@@ -80,7 +82,8 @@ public class TeclasManager : MonoBehaviour
         ToggleTargetPosition(false);
         flechas.Add(new DirectionData { direction = flecha.GetDirection(), angle = flecha.GetOriginalRotation().z });
         AddTecla(flecha.GetDirection());
-        Debug.Log(flechas[flechas.Count-1].angle + " " + flechas[flechas.Count - 1].direction);
+        Debug.Log(flecha.GetDirection());
+        //Debug.Log(flechas[flechas.Count-1].angle + " " + flechas[flechas.Count - 1].direction);
 
         Transform arrowPlace = GetSocketTecla(flecha.GetDirection());
 
@@ -139,31 +142,57 @@ public class TeclasManager : MonoBehaviour
         moverse = true;
     }
 
-    public void AddTecla(string tipoTecla, int cantidad = 1)
+    public void AddTecla(string tecla)
     {
-        if (teclasDisponibles.ContainsKey(tipoTecla))
+        if (teclasComponentes.TryGetValue(tecla, out Type teclaComponent))
         {
-            teclasDisponibles[tipoTecla] += cantidad;
+            if (!teclasDisponibles.ContainsKey(tecla))
+            {
+                teclasDisponibles[tecla] = 0;
+                Debug.Log("Debug AddTecla " + tecla);
+                gameManager.AddComponentToPlayer(teclaComponent);
+            }
+            teclasDisponibles[tecla]++;
         }
         else
         {
-            teclasDisponibles[tipoTecla] = cantidad;
+            Debug.LogError("No existe " + tecla);
         }
     }
 
-    public bool QuitarTecla(string tipoTecla, int cantidad = 1)
+    public void RemoveTecla(string tecla)
     {
-        if (teclasDisponibles.ContainsKey(tipoTecla) && teclasDisponibles[tipoTecla] >= cantidad)
+        if (teclasComponentes.TryGetValue(tecla, out Type teclaComponent))
         {
-            teclasDisponibles[tipoTecla] -= cantidad;
-
-            if (teclasDisponibles[tipoTecla] == 0)
+            if (teclasDisponibles.ContainsKey(tecla))
             {
-                teclasDisponibles.Remove(tipoTecla);
+                teclasDisponibles[tecla]--;
+                if (teclasDisponibles[tecla] <= 0)
+                {
+                    gameManager.RemoveComponentFromPlayer(teclaComponent);
+                    teclasDisponibles.Remove(tecla);
+                }
             }
-            return true;
         }
-        return false;
+        else
+        {
+            Debug.LogError("No existe " + tecla);
+        }
+    }
+
+    public void ReloadTeclas()
+    {
+        foreach (var tecla in teclasDisponibles)
+        {
+            if (teclasComponentes.TryGetValue(tecla.Key, out Type teclaComponent))
+            {
+                gameManager.AddComponentToPlayer(teclaComponent);
+            }
+            else
+            {
+                Debug.LogError(tecla + " no disponible");
+            }
+        }
     }
 
     public int GetCantidadTecla(string tipoTecla)
