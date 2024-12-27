@@ -8,6 +8,7 @@ public class CajaCamara : MonoBehaviour
     [SerializeField] Transform puntoIzq;
     [SerializeField] Transform puntoDrc;
     [SerializeField] CinemachineVirtualCamera camara;
+    //[SerializeField] CinemachineVirtualCamera camara2;
 
     private void Start()
     {

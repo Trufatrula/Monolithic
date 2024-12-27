@@ -6,7 +6,7 @@ public class MovementRightArrow : MonoBehaviour
 {
     public float speed = 5f;
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.RightArrow))
         {

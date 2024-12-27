@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Transform playerPosInicial;
 
-    private string entrance;
     private GameObject playerInstance;
     private TeclasManager teclasManager;
 
@@ -21,6 +20,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            Application.targetFrameRate = 120;
         }
         else
         {
@@ -32,13 +32,13 @@ public class GameManager : MonoBehaviour
     {
         teclasManager = TeclasManager.Instance;
         InstantiatePlayer(playerPosInicial);
-        //List<DirectionData> listaFlechas = new List<DirectionData>
-        //{
-        //    new DirectionData { direction = "Right", angle = 0.9998f },
-        //    new DirectionData { direction = "Left", angle = 0.7777f },
-        //    new DirectionData { direction = "Right", angle = 0.2222f }
-        //};
-        //teclasManager.CargarTeclas(listaFlechas);
+        List<DirectionData> listaFlechas = new List<DirectionData>
+        {
+            new DirectionData { direction = "Right", angle = 0.9998f },
+            new DirectionData { direction = "Left", angle = 0.7777f },
+            new DirectionData { direction = "Right", angle = 0.2222f }
+        };
+        teclasManager.CargarTeclas(listaFlechas);
     }
 
     public void InstantiatePlayer(Transform spawn)
@@ -78,5 +78,10 @@ public class GameManager : MonoBehaviour
         Transform playerCamPos = playerInstance.transform.Find("PuntoCamara");
         Debug.Log(playerCamPos.gameObject.name);
         return playerCamPos;
+    }
+
+    public void CambiarEscena()
+    {
+        teclasManager.UpdateSocketsTeclas();
     }
 }

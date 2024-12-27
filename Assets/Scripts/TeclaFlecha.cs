@@ -11,11 +11,13 @@ public class TeclaFlecha : MonoBehaviour
     private BoxCollider2D boxCollider;
     //private Transform targetTransform;
     private Quaternion originalRotation;
+    private TeclasManager teclasManager;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        teclasManager = TeclasManager.Instance;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -25,10 +27,8 @@ public class TeclaFlecha : MonoBehaviour
             rb.isKinematic = true;
             rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
-            boxCollider.enabled = false;
+            EnableBoxCollider(false);
             originalRotation = transform.rotation;
-
-            TeclasManager.Instance.ConseguirFlecha(this);
 
             if(presentacion)
             {
@@ -36,7 +36,8 @@ public class TeclaFlecha : MonoBehaviour
                 StartCoroutine(MoveSequence());
             } else
             {
-                StartCoroutine(PlaceInSocket());
+                teclasManager.ConseguirFlecha(this);
+                //StartCoroutine(PlaceInSocket());
             }
         }
     }
@@ -48,7 +49,8 @@ public class TeclaFlecha : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        yield return StartCoroutine(PlaceInSocket());
+        teclasManager.ConseguirFlecha(this);
+        //yield return StartCoroutine(PlaceInSocket());
     }
 
     IEnumerator MoveAndRotateToPosition(Vector3 targetPosition)
@@ -67,7 +69,7 @@ public class TeclaFlecha : MonoBehaviour
         transform.rotation = originalRotation;
     }
 
-    IEnumerator PlaceInSocket()
+    public IEnumerator PlaceInSocket()
     {
         Vector3 targetPosition = new Vector3(0, 0, 0);
         targetPosition.z = transform.position.z;
@@ -82,6 +84,17 @@ public class TeclaFlecha : MonoBehaviour
         }
         transform.localPosition = targetPosition;
         transform.rotation = originalRotation;
+        if(gameObject.GetComponent<DragTecla>() == null)
+        {
+            gameObject.AddComponent<DragTecla>();
+        }
+        EnableBoxCollider(true);
+        boxCollider.isTrigger = true;
+    }
+
+    public void PlaceFlechaInSocket()
+    {
+        StartCoroutine(PlaceInSocket());
     }
 
     //public void SetTargetTransform(Transform targetTransform)
@@ -106,5 +119,10 @@ public class TeclaFlecha : MonoBehaviour
         {
             return direction.y > 0 ? "Right" : "Left";
         }
+    }
+
+    public void EnableBoxCollider(bool enable)
+    {
+        boxCollider.enabled = enable;
     }
 }

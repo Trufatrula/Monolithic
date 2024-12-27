@@ -27,6 +27,7 @@ public class GlobalSceneController : MonoBehaviour
 
     public void EnterScene(Transform playerSpawn)
     {
+        gameManager.CambiarEscena();
         InstantiatePlayerOnScene(playerSpawn);
         //StartCoroutine(AnimacionTransicionEntrar(playerSpawn));
     }

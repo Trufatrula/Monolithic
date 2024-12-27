@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Net.Sockets;
+using System.Xml.Linq;
 
 public class TeclasManager : MonoBehaviour
 {
@@ -8,6 +10,8 @@ public class TeclasManager : MonoBehaviour
 
     [SerializeField] private List<Transform> socketsFlechas;
     private GameManager gameManager;
+
+    private SocketsTeclas[] socketsTeclas;
 
     private List<DirectionData> flechas;
     private Dictionary<string, int> teclasDisponibles;
@@ -31,6 +35,7 @@ public class TeclasManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             flechas = new List<DirectionData>();
             teclasDisponibles = new Dictionary<string, int>();
+            socketsTeclas = new SocketsTeclas[50];
             gameManager = GameManager.Instance;
         }
         else
@@ -41,6 +46,7 @@ public class TeclasManager : MonoBehaviour
 
     private void Start()
     {
+        UpdateSocketsTeclas();
         flechasInterfazPosOriginal = flechasInterfaz.localPosition;
         flechasInterfazPosOffset = flechasInterfazPosOriginal;
     }
@@ -82,13 +88,35 @@ public class TeclasManager : MonoBehaviour
         ToggleTargetPosition(false);
         flechas.Add(new DirectionData { direction = flecha.GetDirection(), angle = flecha.GetOriginalRotation().z });
         AddTecla(flecha.GetDirection());
-        Debug.Log(flecha.GetDirection());
+        Debug.Log("Conseguida " + flecha.GetDirection());
         //Debug.Log(flechas[flechas.Count-1].angle + " " + flechas[flechas.Count - 1].direction);
 
         Transform arrowPlace = GetSocketTecla(flecha.GetDirection());
 
         PlaceFlechaInSocket(flecha, arrowPlace);
         //flecha.SetTargetTransform(arrowPlace);
+        flecha.PlaceFlechaInSocket();
+    }
+
+    public void LoseFlecha(TeclaFlecha flecha)
+    {
+        for (int i = flechas.Count - 1; i >= 0; i--)
+        {
+            if(flechas[i].direction.Equals(flecha.GetDirection()))
+            {
+                flechas.RemoveAt(i);
+                break;
+            }
+        }
+        RemoveTecla(flecha.GetDirection());
+        flecha.transform.parent = null;
+        Debug.Log("Perdida " + flecha.GetDirection());
+
+        //foreach(DirectionData d in flechas)
+        //{
+        //    Debug.Log(d.direction + " + " + d.angle);
+        //}
+
     }
 
     private void GenerateFlecha(DirectionData flechaData)
@@ -124,7 +152,10 @@ public class TeclasManager : MonoBehaviour
         Debug.Log("Flecha Placeada en socket");
         if (socket.childCount > 0)
         {
-            Destroy(socket.GetChild(0).gameObject);
+            if(socket.GetChild(0).gameObject != flecha.gameObject)
+            {
+                Destroy(socket.GetChild(0).gameObject);
+            }
         }
         flecha.transform.parent = socket;
     }
@@ -171,6 +202,7 @@ public class TeclasManager : MonoBehaviour
                 {
                     gameManager.RemoveComponentFromPlayer(teclaComponent);
                     teclasDisponibles.Remove(tecla);
+                    Debug.Log("Quitada " + tecla);
                 }
             }
         }
@@ -207,6 +239,17 @@ public class TeclasManager : MonoBehaviour
     public Dictionary<string, int> GetAllTeclas()
     {
         return new Dictionary<string, int>(teclasDisponibles);
+    }
+
+    public void UpdateSocketsTeclas()
+    {
+        Array.Clear(socketsTeclas, 0, socketsTeclas.Length);
+        socketsTeclas = FindObjectsOfType<SocketsTeclas>();
+    }
+
+    public SocketsTeclas[] GetSocketsTeclas()
+    {
+        return socketsTeclas;
     }
 
 }
