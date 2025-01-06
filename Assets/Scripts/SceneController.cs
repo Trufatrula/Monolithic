@@ -25,7 +25,6 @@ public class SceneController : MonoBehaviour
                 pantallasTransicion[entrance.GetTransitionAnimation()].GetComponent<Animator>().SetTrigger("DerechaSalir");
                 break;
             }
-            Debug.Log("SALUFOS");
             pantallasTransicion[0].GetComponent<Animator>().SetTrigger("DerechaSalir");
         }
     }

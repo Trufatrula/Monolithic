@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            Application.targetFrameRate = 120;
+            Application.targetFrameRate = 60;
         }
         else
         {
@@ -34,9 +34,9 @@ public class GameManager : MonoBehaviour
         InstantiatePlayer(playerPosInicial);
         List<DirectionData> listaFlechas = new List<DirectionData>
         {
-            new DirectionData { direction = "Right", angle = 0.9998f },
+            new DirectionData { direction = "Right", angle = 0f },
             new DirectionData { direction = "Left", angle = 0.7777f },
-            new DirectionData { direction = "Right", angle = 0.2222f }
+            new DirectionData { direction = "Up", angle = 0.9998f }
         };
         teclasManager.CargarTeclas(listaFlechas);
     }

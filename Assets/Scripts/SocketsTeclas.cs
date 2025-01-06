@@ -8,14 +8,19 @@ public class SocketsTeclas : MonoBehaviour
     [SerializeField] private bool locker;
     [SerializeField] private bool proximity;
     [SerializeField] private bool timer;
+    [SerializeField] private GameObject cadenas;
 
     [SerializeField] private List<SocketComponent> components;
+    [SerializeField] private List<string> posibleTeclas;
 
-    private TeclaFlecha socketedTecla; 
-
+    private TeclaFlecha socketedTecla;
+    private bool isTaken = false;
+    private bool isBloqued = false;
+    
     public void SnapTeclaToSocket(TeclaFlecha tecla)
     {
         socketedTecla = tecla;
+        isTaken = true;
         string teclaValue = socketedTecla.GetDirection();
         foreach(SocketComponent socketComponent in components)
         {
@@ -27,7 +32,7 @@ public class SocketsTeclas : MonoBehaviour
 
         if (locker)
         {
-            socketedTecla.EnableBoxCollider(false);
+            Lock(true);
         }
     }
 
@@ -42,5 +47,38 @@ public class SocketsTeclas : MonoBehaviour
             }
         }
         socketedTecla = null;
+        isTaken = false;
+    }
+
+    public void RemoveAndReturnTecla()
+    {
+        socketedTecla.GetComponent<DragTecla>().ReturnToOriginalPosition();
+        RemoveTeclaFromSocket();
+    }
+
+    public bool GetIsSocketTaken()
+    {
+        return isTaken || isBloqued;
+    }
+
+    public void SetBloqued(bool isBloqued)
+    {
+        this.isBloqued = isBloqued;
+    }
+
+    public void Lock(bool lockear)
+    {
+        lockear = lockear || locker;
+        socketedTecla.EnableBoxCollider(!lockear);
+        cadenas.SetActive(lockear);
+    }
+
+    public bool CanSnap(string teclaValue)
+    {
+        if(posibleTeclas.Contains(teclaValue))
+        {
+            return true;
+        }
+        return false;
     }
 }

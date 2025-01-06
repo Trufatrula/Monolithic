@@ -44,7 +44,7 @@ public class DragTecla : MonoBehaviour
         eventRemoveSocket = false;
 
         closestSocket = FindClosestSocket();
-        if (closestSocket != null && Vector3.Distance(transform.position, closestSocket.transform.position) <= snapDistance)
+        if (closestSocket != null && Vector3.Distance(transform.position, closestSocket.transform.position) <= snapDistance && closestSocket.CanSnap(teclaFlecha.GetDirection()))
         {
             transform.position = closestSocket.transform.position;
             isSnapped = true;
@@ -65,6 +65,7 @@ public class DragTecla : MonoBehaviour
 
         foreach (SocketsTeclas socket in sockets)
         {
+            if(socket.GetIsSocketTaken()) { continue; }
             float distance = Vector3.Distance(transform.position, socket.gameObject.transform.position);
             if (distance < minDistance)
             {
@@ -75,7 +76,7 @@ public class DragTecla : MonoBehaviour
         return closest;
     }
 
-    void ReturnToOriginalPosition()
+    public void ReturnToOriginalPosition()
     {
         closestSocket = null;
         gameObject.GetComponent<BoxCollider2D>().enabled = false;

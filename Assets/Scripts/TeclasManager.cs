@@ -17,8 +17,8 @@ public class TeclasManager : MonoBehaviour
     private Dictionary<string, int> teclasDisponibles;
     private Dictionary<string, Type> teclasComponentes = new Dictionary<string, Type>
     {
-        { "Left", typeof(MovementLeftArrow) },
-        { "Right", typeof(MovementRightArrow) }
+        { "Left", typeof(PlayerMoveLeftArrow) },
+        { "Right", typeof(PlayerMoveRightArrow) }
     };
 
     private bool moverse = false;
@@ -76,6 +76,7 @@ public class TeclasManager : MonoBehaviour
                 if (!directionsRep.Contains(flechas[i].direction))
                 {
                     directionsRep.Add(flechas[i].direction);
+                    Debug.Log(flechas[i].direction);
                     GenerateFlecha(flechas[i]);
                 }
                 AddTecla(flechas[i].direction);
@@ -108,8 +109,9 @@ public class TeclasManager : MonoBehaviour
                 break;
             }
         }
-        RemoveTecla(flecha.GetDirection());
         flecha.transform.parent = null;
+        RemoveTecla(flecha.GetDirection());
+
         Debug.Log("Perdida " + flecha.GetDirection());
 
         //foreach(DirectionData d in flechas)
@@ -127,6 +129,8 @@ public class TeclasManager : MonoBehaviour
         rotationTecla.z = flechaData.angle;
 
         TeclaFlecha flechorra = Instantiate(flechaPrefab, socketTecla.position, rotationTecla);
+
+
         PlaceFlechaInSocket(flechorra, socketTecla);
     }
 
@@ -203,6 +207,17 @@ public class TeclasManager : MonoBehaviour
                     gameManager.RemoveComponentFromPlayer(teclaComponent);
                     teclasDisponibles.Remove(tecla);
                     Debug.Log("Quitada " + tecla);
+                }
+                else
+                {
+                    for (int i = flechas.Count - 1; i >= 0; i--)
+                    {
+                        if (flechas[i].direction.Equals(tecla))
+                        {
+                                GenerateFlecha(flechas[i]);
+                            break;
+                        }
+                    }
                 }
             }
         }

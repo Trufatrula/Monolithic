@@ -10,7 +10,7 @@ public class TeclaFlecha : MonoBehaviour
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
     //private Transform targetTransform;
-    private Quaternion originalRotation;
+    private Quaternion collectRotation;
     private TeclasManager teclasManager;
 
     void Start()
@@ -18,6 +18,7 @@ public class TeclaFlecha : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         teclasManager = TeclasManager.Instance;
+        collectRotation = transform.rotation;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -28,7 +29,7 @@ public class TeclaFlecha : MonoBehaviour
             rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
             EnableBoxCollider(false);
-            originalRotation = transform.rotation;
+            collectRotation = transform.rotation;
 
             if(presentacion)
             {
@@ -66,7 +67,7 @@ public class TeclaFlecha : MonoBehaviour
             yield return null;
         }
         transform.position = targetPosition;
-        transform.rotation = originalRotation;
+        transform.rotation = collectRotation;
     }
 
     public IEnumerator PlaceInSocket()
@@ -83,7 +84,7 @@ public class TeclaFlecha : MonoBehaviour
             yield return null;
         }
         transform.localPosition = targetPosition;
-        transform.rotation = originalRotation;
+        transform.rotation = collectRotation;
         if(gameObject.GetComponent<DragTecla>() == null)
         {
             gameObject.AddComponent<DragTecla>();
@@ -104,12 +105,12 @@ public class TeclaFlecha : MonoBehaviour
 
     public Quaternion GetOriginalRotation()
     {
-        return originalRotation;
+        return collectRotation;
     }
 
     public string GetDirection()
     {
-        Vector3 direction = originalRotation * Vector3.up;
+        Vector3 direction = collectRotation * Vector3.up;
 
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {

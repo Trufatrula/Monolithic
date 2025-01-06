@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1580176710248283006}
   - component: {fileID: 8513831915265476766}
   - component: {fileID: 3498668768108929937}
+  - component: {fileID: -2028546272955728175}
   m_Layer: 0
   m_Name: Flecha
   m_TagString: Untagged
@@ -94,7 +95,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1990290311276643666}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 6200000, guid: c064b9805e7538941b1ff6bb00080fed, type: 2}
   m_IncludeLayers:
@@ -116,10 +117,10 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.00000016391277, y: 0.00023034215}
+  m_Offset: {x: 0.0026761591, y: -0.0020676702}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -130,7 +131,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8780104, y: 0.87755054}
+  m_Size: {x: 0.8458943, y: 0.8393251}
   m_EdgeRadius: 0
 --- !u!50 &8513831915265476766
 Rigidbody2D:
@@ -174,3 +175,16 @@ MonoBehaviour:
   moveSpeed: 10
   rotateSpeed: 1000
   presentacion: 0
+--- !u!114 &-2028546272955728175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990290311276643666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c35c1b1c3d65d2e4996b6ed4146a2c97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapDistance: 1
