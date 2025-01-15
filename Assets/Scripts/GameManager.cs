@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [SerializeField] private Transform playerPosInicial;
+    [SerializeField] private IntroJuego intro;
 
     private GameObject playerInstance;
     private TeclasManager teclasManager;
@@ -31,14 +32,15 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         teclasManager = TeclasManager.Instance;
-        InstantiatePlayer(playerPosInicial);
-        List<DirectionData> listaFlechas = new List<DirectionData>
-        {
-            new DirectionData { direction = "Right", angle = 0f },
-            new DirectionData { direction = "Left", angle = 0.7777f },
-            new DirectionData { direction = "Up", angle = 0.9998f }
-        };
-        teclasManager.CargarTeclas(listaFlechas);
+        intro.StartIntro();
+        //InstantiatePlayer(playerPosInicial);
+        //List<DirectionData> listaFlechas = new List<DirectionData>
+        //{
+        //    new DirectionData { direction = "Right", angle = 0f },
+        //    new DirectionData { direction = "Left", angle = 0.7777f },
+        //    new DirectionData { direction = "Up", angle = 0.9998f }
+        //};
+        //teclasManager.CargarTeclas(listaFlechas);
     }
 
     public void InstantiatePlayer(Transform spawn)

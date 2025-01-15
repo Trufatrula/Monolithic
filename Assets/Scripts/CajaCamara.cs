@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class CajaCamara : MonoBehaviour
 {
-    [SerializeField] Transform puntoIzq;
-    [SerializeField] Transform puntoDrc;
-    [SerializeField] CinemachineVirtualCamera camara;
-    //[SerializeField] CinemachineVirtualCamera camara2;
+    [SerializeField] private Transform puntoIzq;
+    [SerializeField] private Transform puntoDrc;
+    [SerializeField] private CinemachineVirtualCamera camara;
+    [SerializeField] private bool vertical = false;
 
     private void Start()
     {
@@ -29,14 +29,29 @@ public class CajaCamara : MonoBehaviour
             Vector2 exitingObjectPosition = other.transform.position;
             Vector2 triggerCenterPosition = transform.position;
 
-            if (exitingObjectPosition.x < triggerCenterPosition.x)
+            if (!vertical) 
             {
-                camara.Follow = puntoIzq;
+                if (exitingObjectPosition.x < triggerCenterPosition.x)
+                {
+                    camara.Follow = puntoIzq;
+                }
+                else
+                {
+                    camara.Follow = puntoDrc;
+                }
             }
             else
             {
-                camara.Follow = puntoDrc;
+                if (exitingObjectPosition.y < triggerCenterPosition.y)
+                {
+                    camara.Follow = puntoIzq;
+                }
+                else
+                {
+                    camara.Follow = puntoDrc;
+                }
             }
+
         }
     }
 }

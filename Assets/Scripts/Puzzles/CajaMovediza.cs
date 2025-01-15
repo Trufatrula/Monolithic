@@ -6,7 +6,9 @@ using UnityEngine;
 public class CajaMovediza : MonoBehaviour
 {
     [SerializeField] private SocketsTeclas socketBox;
+    [SerializeField] private float snapPos = 0f;
 
+    private bool isPlaced = false;
     float distanceCaer = 0f;
 
     private IEnumerator MoveBox()
@@ -20,15 +22,28 @@ public class CajaMovediza : MonoBehaviour
             yield return null;
         }
         transform.position = targetPosition;
+        transform.localPosition = new Vector3(snapPos, transform.position.y);
     }
     public void StartMoving(float distanceCaer)
     {
         this.distanceCaer = distanceCaer;
         socketBox.RemoveAndReturnTecla();
+        SetPlaced(true);
+        StartCoroutine(MoveBox());
+    }
+
+    public void SetPlaced(bool place)
+    {
+        if(!place) { return; }
+        isPlaced = true;
+        gameObject.tag = "Untagged";
         socketBox.SetBloqued(true);
         socketBox.GetComponent<SpriteRenderer>().enabled = false;
+    }
 
-        StartCoroutine(MoveBox());
+    public bool GetPlaced()
+    {
+        return isPlaced;
     }
 
 }
