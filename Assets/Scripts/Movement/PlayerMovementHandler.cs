@@ -10,6 +10,8 @@ public class PlayerMovementHandler : MonoBehaviour
     private float moveLeft;
     private float moveRight;
 
+    private bool canMove = true;
+
     private Rigidbody2D rb;
 
     void Start()
@@ -19,9 +21,11 @@ public class PlayerMovementHandler : MonoBehaviour
 
     void FixedUpdate()
     {
-        horizontalInput = moveLeft + moveRight;
-
-        MovePlayer();
+        if(canMove)
+        {
+            horizontalInput = moveLeft + moveRight;
+            MovePlayer();
+        }
     }
 
     void MovePlayer()
@@ -39,4 +43,13 @@ public class PlayerMovementHandler : MonoBehaviour
         this.moveRight = moveRight;
     }
 
+
+    public void SetCanMove(bool canMove)
+    {
+        this.canMove = canMove;
+        if (!canMove)
+        {
+            rb.velocity = Vector3.zero;
+        }
+    }
 }

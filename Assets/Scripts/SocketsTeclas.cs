@@ -15,7 +15,7 @@ public class SocketsTeclas : MonoBehaviour
 
     private TeclaFlecha socketedTecla;
     private bool isTaken = false;
-    private bool isBloqued = false;
+    [SerializeField] private bool isBloqued = false;
     
     public void SnapTeclaToSocket(TeclaFlecha tecla)
     {
@@ -52,8 +52,11 @@ public class SocketsTeclas : MonoBehaviour
 
     public void RemoveAndReturnTecla()
     {
-        socketedTecla.GetComponent<DragTecla>().ReturnToOriginalPosition();
-        RemoveTeclaFromSocket();
+        if(isTaken)
+        {
+            socketedTecla.GetComponent<DragTecla>().ReturnToOriginalPosition();
+            RemoveTeclaFromSocket();
+        }
     }
 
     public bool GetIsSocketTaken()

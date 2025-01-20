@@ -82,6 +82,11 @@ public class GameManager : MonoBehaviour
         return playerCamPos;
     }
 
+    public void SetPlayerCanMove(bool canMove)
+    {
+        playerInstance.GetComponent<PlayerMovementHandler>().SetCanMove(canMove);
+    }
+
     public void CambiarEscena()
     {
         teclasManager.UpdateSocketsTeclas();

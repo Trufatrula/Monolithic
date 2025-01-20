@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Socket
   - PuzleBox
+  - PuzzleTecla
+  - BolitaMinigame
   layers:
   - Default
   - TransparentFX

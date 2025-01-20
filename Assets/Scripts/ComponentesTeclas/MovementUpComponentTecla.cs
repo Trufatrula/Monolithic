@@ -45,6 +45,7 @@ public class MovementUpComponentTecla : MonoBehaviour
 
     void MoveUp()
     {
+        if(playerCollision) { return; }
         Vector3 targetPosition = originalPosition + Vector3.up * maxUpDistance;
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
@@ -66,20 +67,25 @@ public class MovementUpComponentTecla : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void SetPlayerCollision(bool collided)
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            playerCollision = true;
-        }
+        playerCollision = collided;
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            playerCollision = false;
-        }
-    }
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        playerCollision = true;
+    //    }
+    //}
+
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        playerCollision = false;
+    //    }
+    //}
 }
 

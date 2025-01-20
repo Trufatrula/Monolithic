@@ -1,4 +1,6 @@
 using System.Net.Sockets;
+using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 
 public class DragTecla : MonoBehaviour
@@ -14,6 +16,7 @@ public class DragTecla : MonoBehaviour
     private void Start()
     {
         teclaFlecha = GetComponent<TeclaFlecha>();
+
     }
 
     void Update()

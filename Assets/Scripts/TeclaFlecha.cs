@@ -30,6 +30,7 @@ public class TeclaFlecha : MonoBehaviour
             rb.angularVelocity = 0f;
             EnableBoxCollider(false);
             collectRotation = transform.rotation;
+            GetComponent<SpriteRenderer>().color = Color.yellow;
 
             if(presentacion)
             {

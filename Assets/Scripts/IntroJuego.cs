@@ -9,11 +9,25 @@ public class IntroJuego : MonoBehaviour
     [SerializeField] Animator flecha;
     [SerializeField] Transform playerLugar;
     [SerializeField] Rigidbody2D flechaTecla;
-    [SerializeField] GameObject cajaCamara;
+    [SerializeField] List<GameObject> cajasCamara;
+
+    [SerializeField] bool skipIntro;
 
     public void StartIntro()
     {
-        StartCoroutine(StartIntroCutscene());
+        if (skipIntro)
+        {
+            GameManager.Instance.InstantiatePlayer(playerLugar);
+            flechaTecla.transform.parent.rotation = Quaternion.identity;
+            flechaTecla.transform.parent = null;
+            flechaTecla.isKinematic = false;
+            foreach (var c in cajasCamara)
+            { c.gameObject.SetActive(true); }
+        }
+        else
+        {
+            StartCoroutine(StartIntroCutscene());
+        }
     }
 
     private IEnumerator StartIntroCutscene()
@@ -30,7 +44,8 @@ public class IntroJuego : MonoBehaviour
         yield return new WaitForSeconds(1f);
         flechaTecla.transform.parent = null;
         flechaTecla.isKinematic = false;
-        cajaCamara.SetActive(true);
+        foreach (var c in cajasCamara)
+        { c.gameObject.SetActive(true); }
     }
 
 }

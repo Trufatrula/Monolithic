@@ -513,6 +513,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1435836771201405477, guid: 01aefdc2e7352ec4ba8c49bb3ea25f44, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d6b88f95c8ee8e34e9f35eacc0700dd8, type: 3}
+    - target: {fileID: 1435836771201405477, guid: 01aefdc2e7352ec4ba8c49bb3ea25f44, type: 3}
+      propertyPath: m_Color.a
+      value: 0.83137256
+      objectReference: {fileID: 0}
+    - target: {fileID: 1435836771201405477, guid: 01aefdc2e7352ec4ba8c49bb3ea25f44, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1435836771201405477, guid: 01aefdc2e7352ec4ba8c49bb3ea25f44, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1435836771201405477, guid: 01aefdc2e7352ec4ba8c49bb3ea25f44, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3076824301590033133, guid: 01aefdc2e7352ec4ba8c49bb3ea25f44, type: 3}
       propertyPath: m_Name
       value: SocketEstandar
