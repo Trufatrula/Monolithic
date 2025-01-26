@@ -21,6 +21,11 @@ public class PlayerMoveLeftArrow : MonoBehaviour
         movement.MoveLeft(0f);
     }
 
+    private void OnDisable()
+    {
+        movement.MoveLeft(0f);
+    }
+
     private void OnDestroy()
     {
         movement.MoveLeft(0f);

@@ -27,7 +27,7 @@ public class Conversacion : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-            ComenzarConversacion();
+            ComenzarConversacion(); 
         }
     }
 

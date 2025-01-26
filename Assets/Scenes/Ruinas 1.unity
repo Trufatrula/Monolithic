@@ -3295,8 +3295,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292411492
-  m_fontColor: {r: 0.39107457, g: 0, b: 0.8490566, a: 1}
+    rgba: 4278252799
+  m_fontColor: {r: 1, g: 0.95496166, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -47388,11 +47388,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ef498cff26a1604b974573989ef1b5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 1956689786}
   blinkDuration: 0.5
   flashDuration: 0.3
   flashColor: {r: 0.35560483, g: 0, b: 0.509434, a: 1}
   blinksBeforeFlash: 2
+  respawnPlayer: {fileID: 0}
+  flashing: 0
+  cubierto: 0
 --- !u!212 &1956689786
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48481,6 +48483,7 @@ MonoBehaviour:
   posibleTeclas:
   - Right
   - Left
+  isBloqued: 0
 --- !u!212 &2059327376
 SpriteRenderer:
   m_ObjectHideFlags: 0

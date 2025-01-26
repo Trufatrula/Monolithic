@@ -12,7 +12,7 @@ public class MovementTimerMinigame : MonoBehaviour
     private bool isMovingLeft = false;
 
 
-    [SerializeField] private Minijuegos minijuego;
+    [SerializeField] private MinijuegoBarraRotar minijuego;
     [SerializeField] private SocketsTeclas socket;
     private bool isActiveM = false;
 
@@ -21,7 +21,7 @@ public class MovementTimerMinigame : MonoBehaviour
         originalPosition = transform.position;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.LeftArrow))
         {

@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            Application.targetFrameRate = 60;
+            //Application.targetFrameRate = 60;
         }
         else
         {
@@ -90,5 +90,19 @@ public class GameManager : MonoBehaviour
     public void CambiarEscena()
     {
         teclasManager.UpdateSocketsTeclas();
+    }
+
+    public void RespawnPlayer(Transform transform)
+    {
+        playerInstance.transform.position = transform.position;
+        SetPlayerCanMove(false);
+        StartCoroutine(PantallaMuerteEsperar());
+    }
+
+    private IEnumerator PantallaMuerteEsperar()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        SetPlayerCanMove(true);
     }
 }

@@ -9,14 +9,13 @@ public class DragTecla : MonoBehaviour
     private bool isSnapped = false;
     private bool eventRemoveSocket = false;
     private SocketsTeclas closestSocket;
-    private TeclaFlecha teclaFlecha;
+    private TeclaItem teclaItem;
 
     public float snapDistance = 1.0f;
 
     private void Start()
     {
-        teclaFlecha = GetComponent<TeclaFlecha>();
-
+        teclaItem = GetComponent<TeclaItem>();
     }
 
     void Update()
@@ -47,12 +46,24 @@ public class DragTecla : MonoBehaviour
         eventRemoveSocket = false;
 
         closestSocket = FindClosestSocket();
-        if (closestSocket != null && Vector3.Distance(transform.position, closestSocket.transform.position) <= snapDistance && closestSocket.CanSnap(teclaFlecha.GetDirection()))
+
+        string teclaValue = "";
+        if(teclaItem is TeclaFlecha flecha)
+        {
+            teclaValue = flecha.GetDirection();
+        }
+        else
+        {
+            teclaValue = teclaItem.GetTeclaValue();
+        }
+
+
+        if (closestSocket != null && Vector3.Distance(transform.position, closestSocket.transform.position) <= snapDistance && closestSocket.CanSnap(teclaValue))
         {
             transform.position = closestSocket.transform.position;
             isSnapped = true;
             gameObject.transform.parent = closestSocket.transform;
-            closestSocket.SnapTeclaToSocket(teclaFlecha);
+            closestSocket.SnapTeclaToSocket(teclaItem);
         }
         else
         {
@@ -83,7 +94,7 @@ public class DragTecla : MonoBehaviour
     {
         closestSocket = null;
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
-        TeclasManager.Instance.ConseguirFlecha(teclaFlecha);
+        TeclasManager.Instance.ConseguirTecla(teclaItem);
     }
 
     private void RemoveFromSocket()
@@ -95,7 +106,7 @@ public class DragTecla : MonoBehaviour
         }
         else
         {
-            TeclasManager.Instance.LoseFlecha(teclaFlecha);
+            TeclasManager.Instance.LoseTecla(teclaItem);
             Debug.Log("REMOVENCION TOTAL");
         }
     }

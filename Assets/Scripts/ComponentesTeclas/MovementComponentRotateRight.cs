@@ -4,7 +4,7 @@ public class MovementComponentRotateRight : MonoBehaviour
 {
     public float rotationSpeed = 100f;
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.RightArrow))
         {

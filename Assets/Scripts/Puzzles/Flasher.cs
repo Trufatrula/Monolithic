@@ -9,13 +9,19 @@ public class Flasher : MonoBehaviour
     [SerializeField] private Color flashColor = Color.red;
     [SerializeField] private int blinksBeforeFlash = 2;
 
-    private bool flashing = false;
-    private bool cubierto = false;
+    private GameManager gameManager;
+    [SerializeField] private Transform respawnPlayer;
+
+    private BoxCollider2D boxCollider;
+    public bool flashing = false;
+    public bool cubierto = false;
     private Color originalColor;
 
     private void Start()
     {
+        gameManager = GameManager.Instance;
         spriteRenderer = GetComponent<SpriteRenderer>();
+        boxCollider = GetComponent<BoxCollider2D>();
         originalColor = spriteRenderer.color;
         StartCoroutine(BlinkAndFlashRoutine());
     }
@@ -63,10 +69,11 @@ public class Flasher : MonoBehaviour
     private IEnumerator Flash()
     {
         flashing = true;
+        boxCollider.enabled = true;
         spriteRenderer.color = flashColor;
 
         float elapsedTime = 0;
-        while (elapsedTime < flashDuration)
+        while (elapsedTime < 0.01f)
         {
             float alpha = Mathf.Lerp(0, 1, elapsedTime / flashDuration);
             SetSpriteAlpha(alpha);
@@ -84,6 +91,7 @@ public class Flasher : MonoBehaviour
         }
 
         flashing = false;
+        boxCollider.enabled = false;
         spriteRenderer.color = originalColor;
     }
 
@@ -99,7 +107,8 @@ public class Flasher : MonoBehaviour
         if (!flashing || cubierto) { return; }
         if(collision.CompareTag("Player"))
         {
-            Debug.Log("Chetun");
+            Debug.Log("Flasheado");
+            gameManager.RespawnPlayer(respawnPlayer);
         }
     }
 

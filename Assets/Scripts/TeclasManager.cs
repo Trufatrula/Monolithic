@@ -9,6 +9,10 @@ public class TeclasManager : MonoBehaviour
     public static TeclasManager Instance { get; private set; }
 
     [SerializeField] private List<Transform> socketsFlechas;
+    [SerializeField] private Transform espacio;
+
+    [SerializeField] private Animator letrasRevelar;
+    [SerializeField] private List<GameObject> letrasSitions;
     private GameManager gameManager;
 
     private SocketsTeclas[] socketsTeclas;
@@ -18,7 +22,10 @@ public class TeclasManager : MonoBehaviour
     private Dictionary<string, Type> teclasComponentes = new Dictionary<string, Type>
     {
         { "Left", typeof(PlayerMoveLeftArrow) },
-        { "Right", typeof(PlayerMoveRightArrow) }
+        { "Right", typeof(PlayerMoveRightArrow) },
+        { "Down", typeof(PlayerMoveDownArrow) },
+        { "Up", typeof(PlayerMoveUpArrow) },
+        { "Space", typeof(PlayerMoveSpace) }
     };
 
     private bool moverse = false;
@@ -35,7 +42,7 @@ public class TeclasManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             flechas = new List<DirectionData>();
             teclasDisponibles = new Dictionary<string, int>();
-            socketsTeclas = new SocketsTeclas[50];
+            socketsTeclas = new SocketsTeclas[75];
             gameManager = GameManager.Instance;
         }
         else
@@ -84,40 +91,54 @@ public class TeclasManager : MonoBehaviour
         }
     }
 
-    public void ConseguirFlecha(TeclaFlecha flecha)
+    public void ConseguirTecla(TeclaItem tecla)
     {
         ToggleTargetPosition(false);
-        flechas.Add(new DirectionData { direction = flecha.GetDirection(), angle = flecha.GetOriginalRotation().z });
-        AddTecla(flecha.GetDirection());
-        Debug.Log("Conseguida " + flecha.GetDirection());
-        //Debug.Log(flechas[flechas.Count-1].angle + " " + flechas[flechas.Count - 1].direction);
 
-        Transform arrowPlace = GetSocketTecla(flecha.GetDirection());
+        if(tecla is TeclaFlecha flecha)
+        {
+            flechas.Add(new DirectionData { direction = flecha.GetDirection(), angle = flecha.GetOriginalRotation().z });
+            AddTecla(flecha.GetDirection());
+            Debug.Log("Conseguida " + flecha.GetDirection());
+            //Debug.Log(flechas[flechas.Count-1].angle + " " + flechas[flechas.Count - 1].direction);
 
-        PlaceFlechaInSocket(flecha, arrowPlace);
+            Transform arrowPlace = GetSocketTecla(flecha.GetDirection());
+
+            PlaceFlechaInSocket(flecha, arrowPlace);
+        }
+        else
+        {
+            AddTecla(tecla.GetTeclaValue());
+            Debug.Log("Conseguida " + tecla.GetTeclaValue());
+            PlaceTeclaInSocketLetra(tecla);
+        }
+
         //flecha.SetTargetTransform(arrowPlace);
-        flecha.PlaceFlechaInSocket();
+        tecla.PlaceTeclaInSocket();
     }
 
-    public void LoseFlecha(TeclaFlecha flecha)
+    public void LoseTecla(TeclaItem tecla)
     {
-        for (int i = flechas.Count - 1; i >= 0; i--)
+        if(tecla is TeclaFlecha flecha)
         {
-            if(flechas[i].direction.Equals(flecha.GetDirection()))
+            for (int i = flechas.Count - 1; i >= 0; i--)
             {
-                flechas.RemoveAt(i);
-                break;
+                if (flechas[i].direction.Equals(flecha.GetDirection()))
+                {
+                    flechas.RemoveAt(i);
+                    break;
+                }
             }
+            flecha.transform.parent = null;
+            RemoveTecla(flecha.GetDirection());
+
+            Debug.Log("Perdida " + flecha.GetDirection());
         }
-        flecha.transform.parent = null;
-        RemoveTecla(flecha.GetDirection());
-
-        Debug.Log("Perdida " + flecha.GetDirection());
-
-        //foreach(DirectionData d in flechas)
-        //{
-        //    Debug.Log(d.direction + " + " + d.angle);
-        //}
+        else
+        {
+            tecla.transform.parent = null;
+            RemoveTecla(tecla.GetTeclaValue());
+        }
 
     }
 
@@ -162,6 +183,49 @@ public class TeclasManager : MonoBehaviour
             }
         }
         flecha.transform.parent = socket;
+    }
+
+    private void PlaceTeclaInSocketLetra(TeclaItem tecla)
+    {
+        if(tecla.GetTeclaValue().Equals("Space"))
+        {
+            tecla.transform.parent = espacio;
+        }
+        else
+        {
+            letrasRevelar.SetTrigger("Revelar");
+            tecla.GetComponent<SpriteRenderer>().sortingOrder = 5;
+            switch (tecla.GetTeclaValue())
+            {
+
+                case "k":
+                    tecla.transform.parent = letrasSitions[0].transform;
+                    return;
+                case "e":
+                    tecla.transform.parent = letrasSitions[1].transform;
+                    return;
+                case "r":
+                    tecla.transform.parent = letrasSitions[2].transform;
+                    return;
+                case "o":
+                    tecla.transform.parent = letrasSitions[3].transform;
+                    return;
+                case "n":
+                    tecla.transform.parent = letrasSitions[4].transform;
+                    return;
+                case "t":
+                    tecla.transform.parent = letrasSitions[5].transform;
+                    return;
+                case "a":
+                    tecla.transform.parent = letrasSitions[6].transform;
+                    return;
+                case "s":
+                    tecla.transform.parent = letrasSitions[7].transform;
+                    return;
+                default:
+                    return;
+            }
+        }
     }
 
     public void ToggleTargetPosition(bool original)
@@ -261,10 +325,12 @@ public class TeclasManager : MonoBehaviour
         Array.Clear(socketsTeclas, 0, socketsTeclas.Length);
         socketsTeclas = FindObjectsOfType<SocketsTeclas>();
     }
-
+    public void AparecerTecla()
+    {
+        letrasRevelar.SetTrigger("Aparecer");
+    }
     public SocketsTeclas[] GetSocketsTeclas()
     {
         return socketsTeclas;
     }
-
 }

@@ -8,6 +8,8 @@ TagManager:
   - PuzleBox
   - PuzzleTecla
   - BolitaMinigame
+  - CajaAtaque
+  - CajaUsada
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Suelo
   - 
   - 
   - 

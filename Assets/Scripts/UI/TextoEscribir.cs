@@ -52,7 +52,7 @@ public class TextoEscribir : MonoBehaviour
     public void completeSentence()
     {
         textoAEscribir.text = texto;
-        Debug.Log("Terminada");
+        //Debug.Log("Terminada");
         OnTypingFinished?.Invoke(texto);
     }
 }

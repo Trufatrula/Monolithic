@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using TMPro;
 using UnityEngine;
 
-public class Minijuegos : MonoBehaviour
+public class MinijuegoBarraRotar : MonoBehaviour
 {
     [SerializeField] private float duracion;
     [SerializeField] private int puntosVictoria;
@@ -21,6 +21,13 @@ public class Minijuegos : MonoBehaviour
 
     [SerializeField] GameObject marcaComplecion;
 
+    [SerializeField] List<GameObject> canastasIzq;
+    [SerializeField] GameObject canastaActiva;
+    [SerializeField] List<GameObject> canastasDrc;
+    private bool empiezaIzq = true;
+
+    [SerializeField] private Animator barreraCompletado;
+    [SerializeField] private SocketsTeclas socketTimer;
     private MovementTimerMinigame timer;
     private Vector3 timerOriginalPosition;
 
@@ -29,7 +36,7 @@ public class Minijuegos : MonoBehaviour
         Debug.Log("Que emieze");
 
         animatorTapa.SetTrigger("Abrir");
-
+        canastaActiva.GetComponent<Animator>().SetTrigger("Sacar");
         puntuacion.text = puntosVictoria.ToString();
         puntosPartida = puntosVictoria;
 
@@ -106,7 +113,34 @@ public class Minijuegos : MonoBehaviour
             puntuacion.text = "0";
             StopAllCoroutines();
             FinalizarMinijuego();
+            barreraCompletado.SetTrigger("Completado");
+            socketTimer.SetBloqued(true);
+            socketTimer.GetComponent<SpriteRenderer>().enabled = false;
             marcaComplecion.SetActive(true);
+
+        }
+        else
+        {
+            if(empiezaIzq)
+            {
+                canastaActiva.GetComponent<Animator>().SetTrigger("Meter");
+                int indexLista = Random.Range(0, canastasDrc.Count);
+                Debug.Log(indexLista);
+                canastaActiva = canastasDrc[indexLista];
+                canastaActiva.GetComponent<Animator>().SetTrigger("SacarDrc");
+                Debug.Log("TocaDerecha");
+                empiezaIzq = false;
+            }
+            else
+            {
+                canastaActiva.GetComponent<Animator>().SetTrigger("Meter");
+                int indexLista = Random.Range(0, canastasIzq.Count);
+                Debug.Log(indexLista);
+                canastaActiva = canastasIzq[indexLista];
+                canastaActiva.GetComponent<Animator>().SetTrigger("Sacar");
+                Debug.Log("TocaIzquiersd");
+                empiezaIzq = true;
+            }
         }
     }
 

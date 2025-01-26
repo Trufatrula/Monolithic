@@ -5,16 +5,19 @@ using UnityEngine.Events;
 
 public class TriggerEfecto : MonoBehaviour
 {
-    [SerializeField] private string tagg;
+    [SerializeField] private string tagActivar;
     [SerializeField] private UnityEvent evento;
+    [SerializeField] private bool oneTime = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag(tagg))
+        if (collision.CompareTag(tagActivar))
         {
-            collision.tag = "Untagged";
             evento.Invoke();
-            Destroy(gameObject);
+            if(oneTime)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

@@ -12,12 +12,12 @@ public class MovementRightComponentTecla : MonoBehaviour
     private Vector3 originalPosition;
     private bool isMovingRight = false;
 
-    void Start()
+    void Awake()
     {
         originalPosition = transform.position;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.RightArrow))
         {

@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,23 +11,33 @@ public class SocketsTeclas : MonoBehaviour
     [SerializeField] private List<SocketComponent> components;
     [SerializeField] private List<string> posibleTeclas;
 
-    private TeclaFlecha socketedTecla;
+    private TeclaItem socketedTecla;
     private bool isTaken = false;
     [SerializeField] private bool isBloqued = false;
     
-    public void SnapTeclaToSocket(TeclaFlecha tecla)
+    public void SnapTeclaToSocket(TeclaItem tecla)
     {
         socketedTecla = tecla;
         isTaken = true;
-        string teclaValue = socketedTecla.GetDirection();
-        foreach(SocketComponent socketComponent in components)
+        string teclaValue = "";
+        if (socketedTecla is  TeclaFlecha flecha) 
         {
-            if(socketComponent.nameTecla.Equals(teclaValue))
+            teclaValue = flecha.GetDirection();
+        }
+        else
+        {
+            teclaValue = socketedTecla.GetTeclaValue();
+        }
+        if (!(components.Count == 0))
+        {
+            foreach (SocketComponent socketComponent in components)
             {
-                socketComponent.component.enabled = true;
+                if (socketComponent.nameTecla.Equals(teclaValue))
+                {
+                    socketComponent.component.enabled = true;
+                }
             }
         }
-
         if (locker)
         {
             Lock(true);
@@ -38,7 +46,15 @@ public class SocketsTeclas : MonoBehaviour
 
     public void RemoveTeclaFromSocket()
     {
-        string teclaValue = socketedTecla.GetDirection();
+        string teclaValue = "";
+        if (socketedTecla is TeclaFlecha flecha)
+        {
+            teclaValue = flecha.GetDirection();
+        }
+        else
+        {
+            teclaValue = socketedTecla.GetTeclaValue();
+        }
         foreach (SocketComponent socketComponent in components)
         {
             if (socketComponent.nameTecla.Equals(teclaValue))
@@ -83,5 +99,14 @@ public class SocketsTeclas : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public string GetTeclaSocket()
+    {
+        if (socketedTecla != null)
+        {
+            return socketedTecla.GetTeclaValue();
+        }
+        return "";
     }
 }

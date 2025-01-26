@@ -15,12 +15,12 @@ public class MovementUpComponentTecla : MonoBehaviour
     private bool playerCollision = false;
     private bool hasReturned = false;
 
-    void Start()
+    void Awake()
     {
         originalPosition = transform.position;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.UpArrow))
         {

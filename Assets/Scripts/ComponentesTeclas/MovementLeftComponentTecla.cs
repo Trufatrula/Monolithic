@@ -10,7 +10,7 @@ public class MovementLeftComponentTecla : MonoBehaviour
     private Vector3 originalPosition;
     private bool isMovingLeft = false;
 
-    void Start()
+    void Awake()
     {
         originalPosition = transform.position;
     }

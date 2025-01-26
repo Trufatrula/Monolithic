@@ -5,7 +5,7 @@ using UnityEngine;
 public class TriggerEliminarBolitas : MonoBehaviour
 {
     [SerializeField] private bool isPuntuar;
-    [SerializeField] private Minijuegos minijuego;
+    [SerializeField] private MinijuegoBarraRotar minijuego;
     private int puntos = 1;
 
     private void OnTriggerEnter2D(Collider2D collision)
